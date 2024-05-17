@@ -24,7 +24,7 @@ const FormatCollectionName = (str: string): string => {
  * @param includeDBName Should exported interfaces include the database name as prefix? Defaults to false
  * @param hardTypes Email & URL strongly-typed. See doc for more. Defaults to false
  */
-const FetchNewTypes = async ({ outDir = './types', outFileName = "appwrite", includeDBName = false, hardTypes = false }: FetchParameters = {}) => {
+const FetchNewTypes = async ({ outDir = './types', outFileName = "appwrite", includeDBName = false, hardTypes = false, onlyDB = undefined }: FetchParameters = {}) => {
   // Create folder if non-existent
   if (!existsSync(outDir)) {
     mkdirSync(outDir);
@@ -32,7 +32,7 @@ const FetchNewTypes = async ({ outDir = './types', outFileName = "appwrite", inc
 
   // Empty the file
   const writeStream = createWriteStream(`${outDir}/${outFileName}.ts`);
-  writeStream.write("");
+  writeStream.write("import type { Models } from 'node-appwrite';\n\n");
 
   if (hardTypes) {
     CreateHardFieldsTypes(outDir);
@@ -44,6 +44,10 @@ const FetchNewTypes = async ({ outDir = './types', outFileName = "appwrite", inc
   consola.warn("All types are not actually handled. Some might return 'any' type. Please check the generated file and update the types manually. Check the documentation for more information.");
 
   for (const db of databases) {
+    if (onlyDB && db.name !== onlyDB) {
+      consola.info(`Skipping database "${db.name}"...`);
+      continue;
+    }
     const { $id: databaseId, name: databaseName } = db;
 
     consola.start(`Fetching types for database "${db.name}"...`);
@@ -56,8 +60,9 @@ const FetchNewTypes = async ({ outDir = './types', outFileName = "appwrite", inc
       consola.start(`Fetching types for collection "${col.name}"...`);
 
       // Create interface
-      const intfName = FormatCollectionName(includeDBName ? `${databaseName}${collectionName}` : collectionName);
-      const intf = create.interface(intfName, DeclarationFlags.Export);
+      const intfName2 = FormatCollectionName(includeDBName ? `${databaseName}${collectionName}` : collectionName);
+      const intfName = intfName2 + " extends Models.Document"
+      const intf = create.interface(intfName, DeclarationFlags.Export,);
 
       const { attributes } = await databasesClient.listAttributes(databaseId, collectionId);
 

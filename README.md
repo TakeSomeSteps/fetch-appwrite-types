@@ -44,12 +44,13 @@ await FetchNewTypes();
 | outFileName   | `"appwrite"`  | The name of the generated type file               |
 | includeDBName | ```false```              | Add the collection name at start of types         |
 | hardTypes   | ```false```              | Creates an Email type and an URL types. [More](#hard-types). |
+| onlyDB    | "DB_NAME          | will export only one database. default `undefined` = get all
 
 ### Usage
 #### CLI
 Params can be passed as arguments in any order, except for the outDir which might be followed by the path.
 ```bash
-npx fetch-appwrite-types includeDBName outDir /types outFileName appwrite hardTypes
+npx fetch-appwrite-types includeDBName outDir /types outFileName appwrite hardTypes onlyDB myStagingDatabaseExample
 ```
 
 #### Library

@@ -7,20 +7,25 @@ const args = argv.slice(2);
 
 const opts: FetchParameters = {};
 
-if(args.includes("hardTypes")) {
+if (args.includes("hardTypes")) {
   opts.hardTypes = true;
 }
 
-if(args.includes("includeDBName")) {
+if (args.includes("includeDBName")) {
   opts.includeDBName = true;
 }
 
-if(args.includes("outDir")) {
+if (args.includes("outDir")) {
   const outDirIndex = args.indexOf("outDir");
   opts.outDir = args[outDirIndex + 1];
 }
 
-if(args.includes("outFileName")) {
+if (args.includes("onlyDB")) {
+  const onlyDBIndex = args.indexOf("onlyDB");
+  opts.onlyDB = args[onlyDBIndex + 1];
+}
+
+if (args.includes("outFileName")) {
   const outFileNameIndex = args.indexOf("outFileName");
   opts.outFileName = args[outFileNameIndex + 1];
 }
